@@ -1,5 +1,6 @@
 import { User } from "../model/userModel.js"
 import bcrypt from "bcrypt"
+import JWT from "jsonwebtoken"
 
 const saltRounds = 10
 
@@ -34,6 +35,48 @@ export const registerController = async (req, res) => {
 		res.status(500).send({
 			success: false,
 			message: "Error in registration",
+			error
+		})
+	}
+}
+
+export const loginController = async (req, res) => {
+	try {
+		const { email, password } = req.body
+		User.findOne({ email })
+			.then(async (user) => {
+				if (user) {
+					bcrypt.compare(password, user.password, async (err, result) => {
+						if (!result) {
+							return res.status(200).send({
+								success: false,
+								message: "Invalid Password."
+							})
+						} else {
+							let token = JWT.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
+							res.status(200).send({
+								success: true,
+								message: "Logged in successfully",
+								user: { _id: user._id, name: user.name, email: user.email },
+								token
+							})
+						}
+					})
+				} else {
+					return res.status(404).send({
+						success: false,
+						message: "Email is not registered."
+					})
+				}
+			})
+			.catch((err) => {
+				console.log(err)
+			})
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({
+			success: false,
+			message: "Error in login",
 			error
 		})
 	}
