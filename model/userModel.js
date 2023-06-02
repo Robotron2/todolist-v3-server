@@ -1,5 +1,16 @@
 import mongoose from "mongoose"
 
+const itemsSchema = new mongoose.Schema(
+	{
+		name: {
+			type: String,
+			required: true
+		},
+		_id: Number
+	},
+	{ timestamps: true }
+)
+
 const userSchema = new mongoose.Schema(
 	{
 		name: {
@@ -18,7 +29,8 @@ const userSchema = new mongoose.Schema(
 		answer: {
 			type: String,
 			required: true
-		}
+		},
+		userTodo: [itemsSchema]
 	},
 	{ timestamps: true }
 )
