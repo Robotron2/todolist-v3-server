@@ -81,3 +81,28 @@ export const loginController = async (req, res) => {
 		})
 	}
 }
+
+export const forgotPasswordController = async (req, res) => {
+	try {
+		const { email, answer, newPassword } = req.body
+		await User.findOne({ email, answer }).then((user) => {
+			if (!user) {
+				return res.status(404).send({
+					success: false,
+					message: "Wrong email or answer"
+				})
+			} else {
+				bcrypt.hash(newPassword, saltRounds, async (err, hashedPassword) => {
+					await User.findByIdAndUpdate(user._id, { password: hashedPassword }).then(async () => {
+						await res.status(200).send({
+							success: true,
+							message: "Passord reset successfully"
+						})
+					})
+				})
+			}
+		})
+	} catch (error) {
+		console.log(error)
+	}
+}
