@@ -1,6 +1,7 @@
 import { User } from "../model/userModel.js"
 import bcrypt from "bcrypt"
 import JWT from "jsonwebtoken"
+import _ from "lodash"
 
 const saltRounds = 10
 
@@ -17,7 +18,7 @@ export const registerController = async (req, res) => {
 			} else {
 				bcrypt.hash(password, saltRounds, async (err, hashedPassword) => {
 					const newUser = await new User({
-						name,
+						name: _.upperFirst(name),
 						email,
 						password: hashedPassword,
 						answer
