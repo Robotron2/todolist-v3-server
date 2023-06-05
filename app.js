@@ -4,6 +4,7 @@ import morgan from "morgan"
 import cors from "cors"
 import connectDB from "./config/db.js"
 import authRoute from "./routes/authRoute.js"
+import userRoute from "./routes/userRoute.js"
 
 //config env
 dotenv.config()
@@ -26,6 +27,7 @@ app.use(function (req, res, next) {
 })
 
 app.use("/api/v1/auth", authRoute)
+app.use("/api/v1/user", userRoute)
 
 const port = process.env.PORT
 
