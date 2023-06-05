@@ -24,5 +24,27 @@ export const newListItemController = async (req, res) => {
 		})
 		.catch((err) => {
 			console.log(err)
+			res.status(500).send({
+				success: false,
+				message: "Internal server error. Contact us if you see this."
+			})
 		})
+}
+
+export const getAllListController = async (req, res) => {
+	try {
+		let user = await User.findById(req.params.userId)
+		let todoArray = user.userTodo
+		res.status(200).send({
+			success: true,
+			todoArray
+		})
+		console.log(user)
+	} catch (error) {
+		console.log(error)
+		res.status(500).send({
+			success: false,
+			message: "Internal server error. Contact us if you see this."
+		})
+	}
 }
